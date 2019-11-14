@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>mysql事务隔离级别入门了解 - 小番薯</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="随便的人，随便写点东西，大家随便看看,事务的 ACID
+事务具有四个特征：原子性（ Atomicity ）、一致性（ Consistency ）、隔离性（ Isolation ）和持续性（ Durability ）。这四个特性简称为 A,"> 
+    <meta name="author" content="algebra"> 
+    <link rel="alternative" href="atom.xml" title="小番薯" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+</head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">小番薯</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" target="_blank" rel="noopener" data-url="http://algebrafly.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">mysql事务隔离级别入门了解</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" target="_blank" rel="noopener" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;" target="_blank" rel="noopener"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">mysql事务隔离级别入门了解</h1>
+        <div class="stuff">
+            <span>十一月 14, 2019</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BA%8B%E5%8A%A1/" rel="tag">数据库事务</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p><strong>事务的 ACID</strong></p>
+<p>事务具有四个特征：原子性（ Atomicity ）、一致性（ Consistency ）、隔离性（ Isolation ）和持续性（ Durability ）。这四个特性简称为 ACID 特性。</p>
+<blockquote>
+<p>1 、原子性。事务是数据库的逻辑工作单位，事务中包含的各操作要么都做，要么都不做</p>
+<p>2 、一致性。事 务执行的结果必须是使数据库从一个一致性状态变到另一个一致性状态。因此当数据库只包含成功事务提交的结果时，就说数据库处于一致性状态。如果数据库系统 运行中发生故障，有些事务尚未完成就被迫中断，这些未完成事务对数据库所做的修改有一部分已写入物理数据库，这时数据库就处于一种不正确的状态，或者说是 不一致的状态。</p>
+<p>3 、隔离性。一个事务的执行不能其它事务干扰。即一个事务内部的操作及使用的数据对其它并发事务是隔离的，并发执行的各个事务之间不能互相干扰。</p>
+<p>4 、持续性。也称永久性，指一个事务一旦提交，它对数据库中的数据的改变就应该是永久性的。接下来的其它操作或故障不应该对其执行结果有任何影响。</p>
+</blockquote>
+<p><strong>Mysql的四种隔离级别</strong></p>
+<ul>
+<li>Read Uncommitted（读取未提交内容）</li>
+<li>Read Committed（读取提交内容）</li>
+<li>Repeatable Read（可重读）</li>
+<li>Serializable（可串行化）</li>
+</ul>
+<p><img src="/img/mysql-acid.jpg" alt="img"></p>
+<ul>
+<li><p>脏读(Drity Read)：某个事务已更新一份数据，另一个事务在此时读取了同一份数据，由于某些原因，前一个RollBack了操作，则后一个事务所读取的数据就会是不正确的。</p>
+</li>
+<li><p>不可重复读(Non-repeatable read):在一个事务的两次查询之中数据不一致，这可能是两次查询过程中间插入了一个事务更新的原有的数据。</p>
+</li>
+<li><p>幻读(Phantom Read):在一个事务的两次查询中数据笔数不一致，例如有一个事务查询了几列(Row)数据，而另一个事务却在此时插入了新的几列数据，先前的事务在接下来的查询中，就会发现有几列数据是它先前所没有的。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">-- 查看表结构</span><br><span class="line">desc tb_test;</span><br><span class="line">-- 客户端A： 将A的会话隔离级别设置为read uncommitted(未提交读)</span><br><span class="line">SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;</span><br><span class="line"></span><br><span class="line">-- A 查看全局 / 会话事务隔离级别</span><br><span class="line">	-- mysql 5</span><br><span class="line">SELECT @@global.tx_isolation, @@tx_isolation;</span><br><span class="line">	-- mysql 8 </span><br><span class="line">SELECT @@global.transaction_isolation,@@transaction_isolation;</span><br><span class="line"></span><br><span class="line"># 设定全局的隔离级别 设定会话 global 替换为 session 即可 把set语法温习一下</span><br><span class="line"># SET [GLOABL] config_name = &apos;foobar&apos;;</span><br><span class="line"># SET @@[session|global].config_name = &apos;foobar&apos;;</span><br><span class="line"># SELECT @@[global.]config_name;</span><br><span class="line">SET @@gloabl.tx_isolation = 0;</span><br><span class="line">SET @@gloabl.tx_isolation = &apos;READ-UNCOMMITTED&apos;;</span><br><span class="line"></span><br><span class="line">SET @@gloabl.tx_isolation = 1;</span><br><span class="line">SET @@gloabl.tx_isolation = &apos;READ-COMMITTED&apos;;</span><br><span class="line"></span><br><span class="line">SET @@gloabl.tx_isolation = 2;</span><br><span class="line">SET @@gloabl.tx_isolation = &apos;REPEATABLE-READ&apos;;</span><br><span class="line"></span><br><span class="line">SET @@gloabl.tx_isolation = 3;</span><br><span class="line">SET @@gloabl.tx_isolation = &apos;SERIALIZABLE&apos;;</span><br></pre></td></tr></table></figure>
+
+<h6 id="1-未提交度导致的脏读数据"><a href="#1-未提交度导致的脏读数据" class="headerlink" title="1.未提交度导致的脏读数据"></a>1.未提交度导致的脏读数据</h6><p>测试SQL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-- A 启动事务更新数据，不提交</span><br><span class="line">START TRANSACTION;</span><br><span class="line"></span><br><span class="line">-- A 查询数据: （数据为初始状态）</span><br><span class="line">SELECT * FROM tb_test;</span><br><span class="line"></span><br><span class="line">-- ----&gt;&gt;&gt;转客户端-B</span><br><span class="line"></span><br><span class="line">-- A 再次查询数据:  发现数据已经被修改了，这就是所谓的“脏读”</span><br><span class="line">SELECT * FROM tb_test;</span><br><span class="line"></span><br><span class="line">-- ----&gt;&gt;&gt;转客户端-B</span><br><span class="line"></span><br><span class="line">-- A 再次读取数据，发现数据变回初始状态</span><br><span class="line">SELECT * FROM tb_test;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- 客户端B： 启动事务</span><br><span class="line">START TRANSACTION;</span><br><span class="line">-- B 更新数据：不提交</span><br><span class="line">UPDATE tb_test SET num = 10 WHERE id = 1;</span><br><span class="line">-- ----&gt;&gt;&gt;转客户端-A</span><br><span class="line">COMMIT;</span><br><span class="line"> -- OR</span><br><span class="line">ROLLBACK;</span><br><span class="line">-- ----&gt;&gt;&gt;转客户端-A</span><br></pre></td></tr></table></figure>
+
+<p>事务B更新了一条记录，但是没有提交，此时事务A可以查询出未提交记录。造成脏读现象。未提交读是最低的隔离级别。</p>
+<h6 id="2-已提交读导致的不可重复读"><a href="#2-已提交读导致的不可重复读" class="headerlink" title="2.已提交读导致的不可重复读"></a>2.已提交读导致的不可重复读</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 客户端A： 将A的会话隔离级别设置为read committed(已提交读)</span><br><span class="line">SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;</span><br></pre></td></tr></table></figure>
+
+<p>测试SQL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-- A 启动事务更新数据，不提交</span><br><span class="line">START TRANSACTION;</span><br><span class="line"></span><br><span class="line">-- A 查询数据: （数据为初始状态）</span><br><span class="line">SELECT * FROM tb_test;</span><br><span class="line"></span><br><span class="line">-- ----&gt;&gt;&gt;转客户端-B</span><br><span class="line"></span><br><span class="line">-- A 再次查询数据:  发现数据未被修改</span><br><span class="line">SELECT * FROM tb_test;</span><br><span class="line"></span><br><span class="line">-- ----&gt;&gt;&gt;转客户端-B</span><br><span class="line"></span><br><span class="line">-- A 再次读取数据:发现数据已发生变化，说明B提交的修改被事务中的A读到了，这就是所谓的“不可重复读”</span><br><span class="line">SELECT * FROM tb_test;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- 客户端B： 启动事务</span><br><span class="line">START TRANSACTION;</span><br><span class="line">-- B 更新数据：不提交</span><br><span class="line">UPDATE tb_test SET num = 10 WHERE id = 1;</span><br><span class="line">-- ----&gt;&gt;&gt;转客户端-A</span><br><span class="line">COMMIT;</span><br><span class="line"> -- OR</span><br><span class="line">ROLLBACK;</span><br><span class="line">-- ----&gt;&gt;&gt;转客户端-A</span><br></pre></td></tr></table></figure>
+
+<p>已提交读隔离级别解决了脏读的问题，但是出现了不可重复读的问题，即事务A在两次查询的数据不一致，因为在两次查询之间事务B更新了一条数据。已提交读只允许读取已提交的记录，但不要求可重复读。</p>
+<h6 id="3-可重复读级别导致的幻读"><a href="#3-可重复读级别导致的幻读" class="headerlink" title="3.可重复读级别导致的幻读"></a>3.可重复读级别导致的幻读</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 客户端A： 将A的会话隔离级别设置为read committed(已提交读)</span><br><span class="line">SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>（参考：<a href="https://segmentfault.com/a/1190000016566788?utm_source=tag-newest" target="_blank" rel="noopener">https://segmentfault.com/a/1190000016566788?utm_source=tag-newest</a>）</p>
+</blockquote>
+<blockquote>
+<p>幻读错误的理解：说幻读是 事务A 执行两次 select 操作得到不同的数据集，即 select 1 得到 10 条记录，select 2 得到 11 条记录。这其实并不是幻读，这是不可重复读的一种，只会在 R-U R-C 级别下出现，而在 mysql 默认的 RR 隔离级别是不会出现的。</p>
+<p>幻读，并不是说两次读取获取的结果集不同，幻读侧重的方面是某一次的 select 操作得到的结果所表征的数据状态无法支撑后续的业务操作。更为具体一些：select 某记录是否存在，不存在，准备插入此记录，但执行 insert 时发现此记录已存在，无法插入，此时就发生了幻读。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># step-1：开启A客户端事务，并且查询（没有数据）</span><br><span class="line">BEGIN;</span><br><span class="line">select *from tb_test where id = 9</span><br><span class="line"># step-2: 开启B客户端事务，插入一条数据，提交事务</span><br><span class="line">BEGIN;</span><br><span class="line">insert into tb_test values(9,999);</span><br><span class="line">COMMIT;</span><br><span class="line"># step-3:再次查询该条数据（没有显示初B客户端提交的数据，出现了幻读），且尝试insert该ID的数据（出现主键冲突）</span><br><span class="line">select *from tb_test where id = 9</span><br><span class="line">insert into tb_test values(9,999);</span><br></pre></td></tr></table></figure>
+
+<p>RR 也是可以避免幻读的，通过对 select 操作手动加 行X锁（SELECT … FOR UPDATE 这也正是 SERIALIZABLE 隔离级别下会隐式为你做的事情），同时还需要知道，即便当前记录不存在，比如 id = 1 是不存在的，当前事务也会获得一把记录锁（因为InnoDB的行锁锁定的是索引，故记录实体存在与否没关系，存在就加 行X锁，不存在就加 next-key lock间隙X锁），其他事务则无法插入此索引的记录，故杜绝了幻读。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 这里需要用 X锁， 用 LOCK IN SHARE MODE 拿到 S锁 后我们没办法做 写操作</span><br><span class="line">SELECT `id` FROM `users` WHERE `id` = 1 FOR UPDATE;</span><br></pre></td></tr></table></figure>
+
+<h6 id="4-可串行化"><a href="#4-可串行化" class="headerlink" title="4.可串行化"></a>4.可串行化</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 客户端A： 将A的会话隔离级别设置为SERIALIZABLE(串行化)</span><br><span class="line">SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;</span><br></pre></td></tr></table></figure>
+
+<p>serializable完全锁定字段，若一个事务来查询同一份数据就必须等待，直到前一个事务完成并解除锁定为止。是完整的隔离级别，会锁定对应的数据表格，因而会有效率的问题。</p>
+<p>在 SERIALIZABLE 隔离级别下，step1 执行时是会隐式的添加 行(X)锁 / gap(X)锁的，从而 step2 会被阻塞，step3 会正常执行，待 T1 提交后，T2 才能继续执行（主键冲突执行失败），对于 T1 来说业务是正确的，成功的阻塞扼杀了扰乱业务的T2，对于T1来说他前期读取的结果是可以支撑其后续业务的。</p>
+<blockquote>
+<p>id = 1 的记录不存在，开始执行事务：<br>step1: T1 查询 id = 1 的记录并对其加 X锁<br>step2: T2 插入 id = 1 的记录，被阻塞<br>step3: T1 插入 id = 1 的记录，成功执行（T2 依然被阻塞中），T1 提交（T2 唤醒但主键冲突执行错误）</p>
+</blockquote>
+<blockquote>
+<p>T1事务符合业务需求成功执行，T2干扰T1失败。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># step-1：开启A客户端事务，并且查询（没有数据）,加X锁</span><br><span class="line">BEGIN;</span><br><span class="line">select *from tb_test where id = 9 for update;</span><br><span class="line"># step-2: 开启B客户端事务，插入一条数据，会出现“主键冲突的提示”</span><br><span class="line">BEGIN;</span><br><span class="line">insert into tb_test values(9,999);</span><br><span class="line"># step-3:A客户端insert该ID的数据（正常）</span><br><span class="line">insert into tb_test values(9,999);</span><br><span class="line">commit；</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>参考：<a href="https://www.jianshu.com/p/8d735db9c2c0" target="_blank" rel="noopener">https://www.jianshu.com/p/8d735db9c2c0</a></p>
+</blockquote>
+<hr>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="http://link.hhtjim.com/163/5146554.mp3">
+            </audio>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>
